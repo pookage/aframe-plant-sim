@@ -51,7 +51,6 @@ AFRAME.registerComponent('pot', {
 			});
 
 			potElement.appendChild(soilElement);
-
 		}//setupSoil
 	},
 	update: function () {},
