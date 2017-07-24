@@ -11,47 +11,29 @@ AFRAME.registerComponent('pot', {
 	},
 	init: function(){
 
-		const potElement 	= this.el;
-		const defaults		= this.data;
-		const height 		= 0.75;
-		const topRadius 	= 0.45;
-		const bottomRadius	= 0.30;
-		const position 		= potElement.getAttribute("position");
-
+		const element 	= this.el;
+		const defaults	= this.data;
+	
 		setupPot();
-		setupSoil();
 
 		function setupPot(){
 
+			const height 			= 0.75;
+			const radiusTop 		= 0.45;
+			const radiusBottom		= 0.30;
+			const position 			= element.getAttribute("position");
 			const colour 			= defaults.color;
-			const geometry 			= `primitive: cone; height: ${height}; radiusTop: ${topRadius}; radiusBottom: ${bottomRadius};`;
+			const geometry 			= `primitive: cone; height: ${height}; radiusTop: ${radiusTop}; radiusBottom: ${radiusBottom};`;
 			const material 			= `metalness: 0.1; roughness: 1; color: ${colour}`;
 			const offsetPosition 	= `${position.x} ${position.y + ((height * defaults.size) / 2)} ${position.z}`;
 
-			setAttributes(potElement, {
+			setAttributes(element, {
 				geometry: geometry,
 				material: material,
 				position: offsetPosition,
 				scale: `${defaults.size} ${defaults.size} ${defaults.size}`
 			});
 		}//setupPot
-		function setupSoil(){
-
-			const soilElement 		= document.createElement("a-entity");
-			const colour 			= "#382c1d";
-			const geometry 			= `primitive: cone; height: ${height}; radiusTop: ${topRadius * 0.9}; radiusBottom: ${bottomRadius * 0.8};`;
-			const material 			= `metalness: 0; roughness: 1; color: ${colour}`;
-			const offsetPosition 	= `0 ${0.01 * defaults.size} 0`;
-
-			setAttributes(soilElement, {
-				geometry: geometry,
-				material: material,
-				position: offsetPosition,
-				scale: `${defaults.size} ${defaults.size} ${defaults.size}`
-			});
-
-			potElement.appendChild(soilElement);
-		}//setupSoil
 	},
 	update: function () {},
 	tick: function () {},
@@ -63,6 +45,7 @@ AFRAME.registerComponent('pot', {
 AFRAME.registerPrimitive('a-pot', {
 	defaultComponents: {
 		pot: {},
+		soil: {}
 	},
 	mappings: {
 		size: 'pot.size',

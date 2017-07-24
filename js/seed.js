@@ -17,8 +17,6 @@ AFRAME.registerComponent('seed', {
 		const defaults 		= this.data;
 		const properties 	= PLANT_PROPERTIES[defaults.type];
 
-		console.log(this.el.object3D.parent.position.y)
-
 		this.seed = plantSeed();
 		this.el.appendChild(this.seed);
 
@@ -34,9 +32,7 @@ AFRAME.registerComponent('seed', {
 			return element;
 		}//plantSeed
 	},
-	update: function () {
-		console.log(this.el.object3D.parent.position.y)
-	},
+	update: function () {},
 	tick: function () {},
 	remove: function () {},
 	pause: function () {},
