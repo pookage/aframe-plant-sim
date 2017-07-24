@@ -42,3 +42,12 @@ AFRAME.registerComponent('pot', {
 	pause: function () {},
 	play: function () {}
 });
+
+AFRAME.registerPrimitive('a-pot', {
+	defaultComponents: {
+		pot: {},
+	},
+	mappings: {
+		size: 'pot.size',
+	}
+});
