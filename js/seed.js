@@ -108,13 +108,13 @@ AFRAME.registerComponent('seed', {
 				const newHeight 	= currentHeight + growthAmount;
 				const grownAmount 	= newHeight / maxHeight;
 				const newRadius 	= (maxRadius * grownAmount) * 1.25; 
-				const radius 		= newRadius < maxRadius ? newRadius : maxRadius;
+				const radius 		= newRadius <= maxRadius ? newRadius : maxRadius;
 				const geometry 		= `height: ${newHeight}; radius: ${radius}`;
 				const position 		= `0 ${newHeight / 2} 0`
 				
 
 				//tip properties
-				const tipOffset		= currentHeight - ((radius * 2) + (0.075 * grownAmount));
+				const tipOffset		= (currentHeight / 2);
 				const tipGeometry 	= `radius: ${radius}`;
 				const tipPosition 	= `0 ${tipOffset} 0`;
 
