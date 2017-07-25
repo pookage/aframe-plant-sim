@@ -11,7 +11,7 @@ const PLANT_PROPERTIES = {
 		"height" : {
 			"stalk" : 1.25
 		},
-		"growthRate" : 0.001
+		"growthRate" : 0.0001
 	}
 };
 
