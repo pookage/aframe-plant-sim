@@ -6,12 +6,12 @@ const PLANT_PROPERTIES = {
 		},
 		"width" : {
 			"seed" : 	0.015,
-			"stalk" : 	0.015
+			"stalk" : 	0.275
 		},
 		"height" : {
-			"stalk" : 1
+			"stalk" : 1.25
 		},
-		"growthRate" : 0.0001
+		"growthRate" : 0.001
 	}
 };
 
@@ -52,6 +52,7 @@ AFRAME.registerComponent('seed', {
 	pause: function () {},
 	play: function () {
 
+		const element = this;
 		//move seed to surface
 		this.surface = this.el.object3D.parent.position.y;
 		setAttributes(this.seed, {
@@ -66,16 +67,26 @@ AFRAME.registerComponent('seed', {
 
 		function sproutSeed(){
 			const properties 	= PLANT_PROPERTIES[defaults.type];
-			const element 		= document.createElement("a-entity");
-			const geometry 		= `primitive: cylinder; height: 0; radius: 0`;
-			const material 		= `color: ${properties.colours.stalk}`;
+			const stalk 		= document.createElement("a-entity");
+			const stalkGeometry = `primitive: cylinder; height: 0; radius: 0`;
+			const stalkMaterial = `color: ${properties.colours.stalk}; metalness: 0; roughness: 1`;
 
-			setAttributes(element, {
-				geometry,
-				material
+			const tip 			= document.createElement("a-entity");
+			const tipGeometry 	= `primitive: sphere; height: 0; radius: 0`;
+
+			setAttributes(stalk, {
+				geometry: stalkGeometry,
+				material: stalkMaterial
+			});
+			setAttributes(tip, {
+				geometry: tipGeometry,
+				material: stalkMaterial
 			});
 
-			return element;
+			element.tip = tip;
+			stalk.appendChild(tip);
+
+			return stalk;
 		}//sproutSeed
 	},
 	grow: function(){
@@ -91,18 +102,33 @@ AFRAME.registerComponent('seed', {
 			const maxRadius 	= properties.width.stalk;
 
 			if(currentHeight < maxHeight){
+
+				//stalk properties
 				const growthAmount 	= properties.growthRate;
 				const newHeight 	= currentHeight + growthAmount;
 				const grownAmount 	= newHeight / maxHeight;
-				const newRadius 	= (maxRadius * grownAmount) * 2; 
+				const newRadius 	= (maxRadius * grownAmount) * 1.25; 
 				const radius 		= newRadius < maxRadius ? newRadius : maxRadius;
 				const geometry 		= `height: ${newHeight}; radius: ${radius}`;
 				const position 		= `0 ${newHeight / 2} 0`
 				
+
+				//tip properties
+				const tipOffset		= currentHeight - ((radius * 2) + (0.075 * grownAmount));
+				const tipGeometry 	= `radius: ${radius}`;
+				const tipPosition 	= `0 ${tipOffset} 0`;
+
 				setAttributes(this.plant, {
 					geometry,
 					position
 				});
+
+				setAttributes(this.tip, {
+					geometry: tipGeometry,
+					position: tipPosition
+				});
+
+
 			}
 		}
 	}
