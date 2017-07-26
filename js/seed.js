@@ -26,14 +26,13 @@ AFRAME.registerComponent('seed', {
 
 		this.grow 			= AFRAME.utils.bind(this.grow, this);
 
+		const element 		= this.el;
 		const defaults 		= this.data;
 		const properties 	= PLANT_PROPERTIES[defaults.type];
 
-		this.seed 	= plantSeed();
-		this.el.appendChild(this.seed);
+		drawSeed();
 
-		function plantSeed(){
-			const element 	= document.createElement("a-entity");
+		function drawSeed(){
 			const geometry 	= `primitive: sphere; radius: ${properties.width.seed}`;
 			const material 	= `color: ${properties.colours.seed}`;
 
@@ -41,8 +40,7 @@ AFRAME.registerComponent('seed', {
 				geometry,
 				material
 			});
-			return element;
-		}//plantSeed
+		}//drawSeed
 	},
 	update: function () {},
 	tick: function () {
@@ -55,14 +53,14 @@ AFRAME.registerComponent('seed', {
 		const element = this;
 		//move seed to surface
 		this.surface = this.el.object3D.parent.position.y;
-		setAttributes(this.seed, {
+		setAttributes(this.el, {
 			position: `0 ${this.surface} 0`
 		});
 
 		//sproud seed with plant
 		const defaults 	= this.data;
 		this.plant 		= sproutSeed();
-		this.seed.appendChild(this.plant);
+		this.el.appendChild(this.plant);
 
 
 		function sproutSeed(){
