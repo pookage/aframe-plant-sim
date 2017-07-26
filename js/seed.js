@@ -24,19 +24,27 @@ AFRAME.registerComponent('seed', {
 	},
 	init: function(){
 
+		//function binding
+		//-------------------------
 		this.grow 			= AFRAME.utils.bind(this.grow, this);
 
-		const element 		= this.el;
+		//scoping variables
+		//-------------------------
+		const seed 			= this.el;
 		const defaults 		= this.data;
-		const properties 	= PLANT_PROPERTIES[defaults.type];
 
+		//define the geom and material
+		//-------------------------
 		drawSeed();
 
+		//function definitions
+		//-------------------------
 		function drawSeed(){
-			const geometry 	= `primitive: sphere; radius: ${properties.width.seed}`;
-			const material 	= `color: ${properties.colours.seed}`;
+			const properties 	= PLANT_PROPERTIES[defaults.type];
+			const geometry 		= `primitive: sphere; radius: ${properties.width.seed}`;
+			const material 		= `color: ${properties.colours.seed}`;
 
-			setAttributes(element, {
+			setAttributes(seed, {
 				geometry,
 				material
 			});
@@ -50,27 +58,39 @@ AFRAME.registerComponent('seed', {
 	pause: function () {},
 	play: function () {
 
-		const element = this;
-		//move seed to surface
-		this.surface = this.el.object3D.parent.position.y;
-		setAttributes(this.el, {
-			position: `0 ${this.surface} 0`
+		//scope variables
+		//-------------------------
+		const self 			= this;
+		const seed 			= this.el;
+		const defaults 		= this.data;
+
+		//move seed to the surface
+		//-------------------------
+		const soil 			= seed.object3D.parent;
+		const surfacePos 	= soil.position.y;
+		setAttributes(seed, {
+			position: `0 ${surfacePos} 0`
 		});
 
 		//sproud seed with plant
-		const defaults 	= this.data;
-		this.plant 		= sproutSeed();
+		//-------------------------
+		this.plant = sproutSeed();
 		this.el.appendChild(this.plant);
 
 
+		//function definitions
+		//-------------------------
 		function sproutSeed(){
 			const properties 	= PLANT_PROPERTIES[defaults.type];
+
+			//stalk setup
 			const stalk 		= document.createElement("a-entity");
 			const stalkGeometry = `primitive: cylinder; height: 0; radius: 0`;
 			const stalkMaterial = `color: ${properties.colours.stalk}; metalness: 0; roughness: 1`;
 
+			//tip setup
 			const tip 			= document.createElement("a-entity");
-			const tipGeometry 	= `primitive: sphere; height: 0; radius: 0`;
+			const tipGeometry 	= `primitive: sphere; radius: 0;`;
 
 			setAttributes(stalk, {
 				geometry: stalkGeometry,
@@ -81,7 +101,7 @@ AFRAME.registerComponent('seed', {
 				material: stalkMaterial
 			});
 
-			element.tip = tip;
+			self.tip = tip;
 			stalk.appendChild(tip);
 
 			return stalk;
@@ -89,19 +109,26 @@ AFRAME.registerComponent('seed', {
 	},
 	grow: function(){
 
-		const defaults 		= this.data;
 		const currentGeom 	= this.plant.getAttribute("geometry");
-		const properties 	= PLANT_PROPERTIES[defaults.type];
 
+		//only start growing if 
 		if(currentGeom){
+
+			//scoping stuff
+			const defaults 		= this.data;
+			const properties 	= PLANT_PROPERTIES[defaults.type];
+
+			//get current state
 			const currentHeight = currentGeom.height;
 			const currentRadius = currentGeom.radius;
 			const maxHeight 	= properties.height.stalk;
 			const maxRadius 	= properties.width.stalk;
 
+			//don't grow any more if already at max height
 			if(currentHeight < maxHeight){
 
 				//stalk properties
+				//-----------------------------
 				const growthAmount 	= properties.growthRate;
 				const newHeight 	= currentHeight + growthAmount;
 				const grownAmount 	= newHeight / maxHeight;
@@ -109,18 +136,19 @@ AFRAME.registerComponent('seed', {
 				const radius 		= newRadius <= maxRadius ? newRadius : maxRadius;
 				const geometry 		= `height: ${newHeight}; radius: ${radius}`;
 				const position 		= `0 ${newHeight / 2} 0`
-				
 
 				//tip properties
+				//-----------------------------
 				const tipOffset		= (currentHeight / 2);
 				const tipGeometry 	= `radius: ${radius}`;
 				const tipPosition 	= `0 ${tipOffset} 0`;
 
+				//update geometries
+				//----------------------------------
 				setAttributes(this.plant, {
 					geometry,
 					position
 				});
-
 				setAttributes(this.tip, {
 					geometry: tipGeometry,
 					position: tipPosition
