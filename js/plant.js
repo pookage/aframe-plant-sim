@@ -20,13 +20,15 @@ AFRAME.registerComponent('plant', {
 				"height" : {
 					"stalk" : 1.25
 				},
-				"growthRate" : 0.0001
+				"growthRate" : 0.01
 			}
 		};
 
 		//function binding
 		//-------------------------
-		this.grow 			= AFRAME.utils.bind(this.grow, this);
+		this.grow 				= AFRAME.utils.bind(this.grow, this);
+		this.drawNeedles 		= AFRAME.utils.bind(this.drawNeedles, this);
+		this.needleDrawInterval = 4000;
 
 		//scope variables
 		//-------------------------
@@ -62,17 +64,13 @@ AFRAME.registerComponent('plant', {
 				material: stalkMaterial
 			});
 
-			//drawNeedles(stalk);
 
 			self.tip = tip;
 			stalk.appendChild(tip);
 
 			return stalk;
 		}//setupPlant
-		function drawNeedles(entity){
-			const vertices = entity.getObject3D("mesh");//entity.object3DMap.mesh.geometry.attributes.position.array;
-			console.log(vertices);
-		}//drawNeedles
+		
 
 
 	},
@@ -82,7 +80,11 @@ AFRAME.registerComponent('plant', {
 	},
 	remove: function () {},
 	pause: function () {},
-	play: function () {},
+	play: function () {
+		setTimeout(() => {
+			this.drawNeedles(this.el);
+		}, this.needleDrawInterval)
+	},
 	grow: function(){
 
 		const currentGeom 	= this.el.getAttribute("geometry");
@@ -131,7 +133,17 @@ AFRAME.registerComponent('plant', {
 				});
 			}
 		}
-	}
+	},
+	drawNeedles: function(entity){
+		if(!this.needles){
+			const vertices 		= entity.object3DMap.mesh.geometry.attributes.position.array;
+			const needleCount 	= 20;
+			const ratio 		= vertices.length / needleCount;
+			for(let vertex of vertices){
+
+			}
+		}
+	}//drawNeedles
 });
 AFRAME.registerPrimitive('a-plant', {
 	defaultComponents: {
